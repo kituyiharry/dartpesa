@@ -1,5 +1,6 @@
+abstract class LNMResponse{}
 /// Encapsulates error from a failed Lipa na M-Pesa transaction
-class LNMError {
+class LNMError extends LNMResponse {
   final int resultCode;
   final String resultDesc;
   final String merchantRequestID;
@@ -15,7 +16,7 @@ class LNMError {
 }
 
 /// Encapsulates success of a successful Lipa na M-Pesa transaction
-class LNMSuccess {
+class LNMSuccess extends LNMResponse {
   final String merchantRequestID;
   final String checkoutRequestID;
   final int resultCode;

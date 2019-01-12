@@ -20,9 +20,9 @@ class LNMOnlineTransaction{
     assert(lNMSettings != null && sTKPushUri != null, authToken != null);
 
 
-  Future<dynamic> transact(String lNMKey) async {
-    //LNMSuccess lnmSuccess;
-    //LNMError lnmError;
+  Future<LNMResponse> transact(String lNMKey) async {
+    LNMSuccess lnmSuccess;
+    LNMError lnmError;
     Map lnm = lNMSettings.asMap(lNMKey);
     print(lnm);
     print("FlatMapping!!");
@@ -30,7 +30,7 @@ class LNMOnlineTransaction{
     await http.post(sTKPushUri,headers: {"Authorization": " Bearer ${authToken.accessToken}","Content-Type": "application/json;charset=UTF-8"},body: jsonEncode(lnm))
         .then((response) => print("Res: ${response.body}, ${response.statusCode}"))
         .catchError((err) => print("Error: $err"));
-    return "RETURN";
+    return lnmError;
   }
 
 } 
