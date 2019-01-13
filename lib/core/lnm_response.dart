@@ -1,31 +1,45 @@
-abstract class LNMResponse{}
-/// Encapsulates error from a failed Lipa na M-Pesa transaction
-class LNMError extends LNMResponse {
-  final int resultCode;
-  final String resultDesc;
-  final String merchantRequestID;
-  final String checkoutRequestID;
+// LNMResponse Encapsulates responseCode from the API, callback response code is different
+abstract class AbstractResponseType{}
 
-  LNMError(this.resultCode,this.resultDesc,this.merchantRequestID,this.checkoutRequestID);
+class LNMResponse extends AbstractResponseType{
 
-  LNMError.fromJson(Map jsonData):
-    resultCode = jsonData['ResultCode'],
-    resultDesc = jsonData['ResultDesc'],
-    merchantRequestID = jsonData['MerchantRequestID'],
-    checkoutRequestID = jsonData['CheckoutRequestID'];
+  final String merchantRequestId;
+  final String checkOutRequestId;
+  final int responseCode;
+  final int httpResCode;
+  final String responseDescription;
+  final String customerMessage;
+
+  LNMResponse(this.merchantRequestId,this.checkOutRequestId,this.httpResCode,this.responseCode,this.responseDescription,this.customerMessage);
+  
+  LNMResponse.fromJson(Map jsonData,this.httpResCode): 
+    merchantRequestId = jsonData["MerchantRequestID"],
+    checkOutRequestId = jsonData["CheckOutRequestID"],
+    responseCode = int.parse(jsonData["ResponseCode"]),
+    responseDescription = jsonData["ResponseDescription"],
+    customerMessage = jsonData["CustomerMessage"];
+
+    @override
+    String toString(){
+      return "$responseCode : $customerMessage";
+    }
 }
 
-/// Encapsulates success of a successful Lipa na M-Pesa transaction
-class LNMSuccess extends LNMResponse {
-  final String merchantRequestID;
-  final String checkoutRequestID;
-  final int resultCode;
-  final String resultDesc;
+class LNMError extends AbstractResponseType{
 
-  LNMSuccess(this.merchantRequestID,this.checkoutRequestID,this.resultCode,this.resultDesc);
-  LNMSuccess.fromJson(Map jsonData):
-    resultCode = jsonData['ResultCode'],
-    resultDesc = jsonData['ResultDesc'],
-    merchantRequestID = jsonData['MerchantRequestID'],
-    checkoutRequestID = jsonData['CheckoutRequestID'];
+  final String requestId;
+  final String errorCode;
+  final String errorMessage;
+  final int httpResCode;
+
+  LNMError(this.requestId,this.httpResCode,this.errorCode,this.errorMessage);
+
+  LNMError.fromJson(Map jsonData,this.httpResCode): 
+    requestId = jsonData["requestId"],
+    errorCode = jsonData["errorCode"],
+    errorMessage = jsonData["errorMessage"];
+
+  @override 
+  String toString() => "$errorCode : $errorMessage [HTTP Code: $httpResCode]";  
+
 }

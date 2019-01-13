@@ -11,6 +11,7 @@ class LNMSettings {
   final Uri callBackUrl;
   final String accountRef;
   final String transactionDesc;
+  final String lnmKey;
 
   LNMSettings(
       {@required this.businessShortCode,
@@ -20,6 +21,7 @@ class LNMSettings {
       @required this.phoneNumber,
       @required this.callBackUrl,
       @required this.accountRef,
+      @required this.lnmKey,
       @required this.transactionDesc})
       : assert(businessShortCode != null &&
             amount != null &&
@@ -31,7 +33,7 @@ class LNMSettings {
             accountRef != null &&
             transactionDesc != null);
 
-  Map<String, dynamic> asMap(String lnmKey) {
+  Map<String, dynamic> asMap() {
     DateTime ts = DateTime.now();
     String formattedTs =
         "${ts.year}${ts.month.toString().padLeft(2, '0')}${ts.day.toString().padLeft(2, '0')}${ts.hour.toString().padLeft(2, '0')}${ts.minute.toString().padLeft(2, '0')}${ts.second.toString().padLeft(2, '0')}";

@@ -2,14 +2,11 @@ import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-
 import 'package:dartpesa/core/lnm_settings.dart';
 import 'package:dartpesa/network/auth_token.dart';
 import 'package:dartpesa/core/lnm_response.dart';
 
-
-
-
+// Network calls to the LNM backend and returns a responseCode
 class LNMOnlineTransaction{
 
   final LNMSettings lNMSettings;
@@ -20,17 +17,15 @@ class LNMOnlineTransaction{
     assert(lNMSettings != null && sTKPushUri != null, authToken != null);
 
 
-  Future<LNMResponse> transact(String lNMKey) async {
-    LNMSuccess lnmSuccess;
-    LNMError lnmError;
-    Map lnm = lNMSettings.asMap(lNMKey);
-    print(lnm);
-    print("FlatMapping!!");
-    print("AuthToken: ${authToken.accessToken}");
+  Future<AbstractResponseType> transact() async {
+    AbstractResponseType response;
+    Map lnm = lNMSettings.asMap();
     await http.post(sTKPushUri,headers: {"Authorization": " Bearer ${authToken.accessToken}","Content-Type": "application/json;charset=UTF-8"},body: jsonEncode(lnm))
-        .then((response) => print("Res: ${response.body}, ${response.statusCode}"))
+        .then((res) { res.statusCode == 200 ? response = LNMResponse.fromJson(jsonDecode(res.body),res.statusCode) : response = LNMError.fromJson(jsonDecode(res.body),res.statusCode);} )
         .catchError((err) => print("Error: $err"));
-    return lnmError;
+
+    print(response.toString());
+    return response;
   }
 
 } 
