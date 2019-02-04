@@ -7,13 +7,14 @@ import 'package:dartpesa/core/headers.dart';
 const String authUrl = "sandbox.safaricom.co.ke";
 const String authScheme = "https";
 const String authPath = "/oauth/v1/generate";
-const Map<String,String> authQueryParams = const <String, String>{'grant_type': 'client_credentials'};
+const Map<String, String> authQueryParams = const <String, String>{
+  'grant_type': 'client_credentials'
+};
 
 /// This receives an instance of [Header] and creates an authentication client that authenticates with Safaricoms
-/// Authentication service. The received token is Parsed to Base64 to create an instance of [AuthToken] which is already 
+/// Authentication service. The received token is Parsed to Base64 to create an instance of [AuthToken] which is already
 /// wrapped in a [Future] to support async programming patterns
 class Authenticator {
-
   final Header _headers;
   final Uri authUri = Uri(
       scheme: authScheme,
@@ -27,8 +28,10 @@ class Authenticator {
   Future<AuthToken> fetchToken() async {
     AuthToken authToken;
     await http
-        .get(authUri,
-            headers: {"Authorization": "Basic ${_headers.authSecret}","Content-Type": "application/json"})
+        .get(authUri, headers: {
+          "Authorization": "Basic ${_headers.authSecret}",
+          "Content-Type": "application/json"
+        })
         .then((response) => response.body)
         .then(jsonDecode)
         .then((jsonData) => AuthToken.fromJson(jsonData))
@@ -37,5 +40,4 @@ class Authenticator {
         });
     return authToken;
   }
-
 }

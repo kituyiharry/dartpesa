@@ -1,8 +1,9 @@
-// LNMResponse Encapsulates responseCode from the API, callback response code is different
-abstract class AbstractResponseType{}
+/// A plain class that used by varying LNM Response Types
+abstract class AbstractResponseType {}
 
-class LNMResponse extends AbstractResponseType{
-
+/// Encapsulates a successful API call to the API after an [LNMOnlineTransaction] and carries immediate response information
+/// from the result.
+class LNMResponse extends AbstractResponseType {
   final String merchantRequestId;
   final String checkOutRequestId;
   final int responseCode;
@@ -10,36 +11,40 @@ class LNMResponse extends AbstractResponseType{
   final String responseDescription;
   final String customerMessage;
 
-  LNMResponse(this.merchantRequestId,this.checkOutRequestId,this.httpResCode,this.responseCode,this.responseDescription,this.customerMessage);
-  
-  LNMResponse.fromJson(Map jsonData,this.httpResCode): 
-    merchantRequestId = jsonData["MerchantRequestID"],
-    checkOutRequestId = jsonData["CheckOutRequestID"],
-    responseCode = int.parse(jsonData["ResponseCode"]),
-    responseDescription = jsonData["ResponseDescription"],
-    customerMessage = jsonData["CustomerMessage"];
+  /// Constructs an [LNMResponse] object
+  LNMResponse(this.merchantRequestId, this.checkOutRequestId, this.httpResCode,
+      this.responseCode, this.responseDescription, this.customerMessage);
 
-    @override
-    String toString(){
-      return "$responseCode : $customerMessage";
-    }
+  /// Constructs an [LNMResponse] object from a Map of Json String along with the HTTP result code
+  LNMResponse.fromJson(Map jsonData, this.httpResCode)
+      : merchantRequestId = jsonData["MerchantRequestID"],
+        checkOutRequestId = jsonData["CheckOutRequestID"],
+        responseCode = int.parse(jsonData["ResponseCode"]),
+        responseDescription = jsonData["ResponseDescription"],
+        customerMessage = jsonData["CustomerMessage"];
+
+  @override
+  String toString() {
+    return "$responseCode : $customerMessage";
+  }
 }
 
-class LNMError extends AbstractResponseType{
-
+/// Encapsulates a Error from the API call to the API after an [LNMOnlineTransaction] and carries immediate response information
+/// from the result.
+class LNMError extends AbstractResponseType {
   final String requestId;
   final String errorCode;
   final String errorMessage;
   final int httpResCode;
 
-  LNMError(this.requestId,this.httpResCode,this.errorCode,this.errorMessage);
+  LNMError(this.requestId, this.httpResCode, this.errorCode, this.errorMessage);
 
-  LNMError.fromJson(Map jsonData,this.httpResCode): 
-    requestId = jsonData["requestId"],
-    errorCode = jsonData["errorCode"],
-    errorMessage = jsonData["errorMessage"];
+  /// Constructs an [LNMError] object from a Map of Json String along with the HTTP result code
+  LNMError.fromJson(Map jsonData, this.httpResCode)
+      : requestId = jsonData["requestId"],
+        errorCode = jsonData["errorCode"],
+        errorMessage = jsonData["errorMessage"];
 
-  @override 
-  String toString() => "$errorCode : $errorMessage [HTTP Code: $httpResCode]";  
-
+  @override
+  String toString() => "$errorCode : $errorMessage [HTTP Code: $httpResCode]";
 }
